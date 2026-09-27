@@ -2,8 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:southsea_cinema/constants.dart';
 import 'package:southsea_cinema/widgets/nav_drawer.dart';
 
-class MovieListing extends StatelessWidget {
+class MovieListing extends StatefulWidget { //changed it to stateufl to change the price based on dropdown selection
   const MovieListing({super.key});
+
+  @override
+  State<MovieListing> createState() => _MovieListingState();
+}
+
+class _MovieListingState extends State<MovieListing> {
+  int _totalPrice = 10;
 
   @override
   Widget build(BuildContext context) {
@@ -15,8 +22,6 @@ class MovieListing extends StatelessWidget {
         elevation: 0,
       ),
       drawer: const NavDrawer(),
-
-
       body: Container(
         margin: const EdgeInsets.all(8),
         padding: const EdgeInsets.all(8),
@@ -27,21 +32,39 @@ class MovieListing extends StatelessWidget {
           ),
           borderRadius: BorderRadius.circular(10),
         ),
-        child: const Column(
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
+            const Text(
               'The Godfather',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            Text(
+            const Text(
               'The aging patriarch of an organized crime dynasty transfers control of his empire to his reluctant son.',
+            ),
+            
+            DropdownMenu<int>(
+              initialSelection: _totalPrice,
+              onSelected: (int? value) {
+                if (value != null) {
+                  setState(() {
+                    _totalPrice = value;
+                  });
+                }
+              },
+              dropdownMenuEntries: const [
+                DropdownMenuEntry(value: 7, label: '1 Ticket'),
+                DropdownMenuEntry(value: 14, label: '2 Tickets'),
+                DropdownMenuEntry(value: 21, label: '3 Tickets'),
+                DropdownMenuEntry(value: 28, label: '4 Tickets'),
+                DropdownMenuEntry(value: 35, label: '5 Tickets'),
+              ],
             ),
           ],
         ),
       ),
     );
-  } 
+  }
 }
 
