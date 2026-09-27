@@ -38,12 +38,13 @@ class _MovieListingState extends State<MovieListing> {
           children: [
             const Text(
               'The Godfather',
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
             ),
             const Text(
               'The aging patriarch of an organized crime dynasty transfers control of his empire to his reluctant son.',
+              style: TextStyle(fontSize: 16),
             ),
-            
+
             DropdownMenu<int>(
               initialSelection: _totalPrice,
               onSelected: (int? value) {
