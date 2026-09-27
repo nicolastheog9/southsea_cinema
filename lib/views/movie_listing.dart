@@ -16,6 +16,14 @@ class MovieListing extends StatelessWidget {
       ),
       drawer: const NavDrawer(),
       body: Container(
+  padding: const EdgeInsets.all(16),
+  decoration: BoxDecoration(
+    border: Border.all(
+      color: const Color.fromARGB(255, 65, 216, 236),
+      width: 2,
+    ),
+    borderRadius: BorderRadius.circular(10),
+  ),
   child: Column(
     mainAxisAlignment: MainAxisAlignment.center,
     children: [
