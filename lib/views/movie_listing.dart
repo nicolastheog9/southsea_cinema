@@ -15,7 +15,21 @@ class MovieListing extends StatelessWidget {
         elevation: 0,
       ),
       drawer: const NavDrawer(),
-      body: const SizedBox.shrink(),
+      body: Container(
+  child: Column(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      Text(
+        'The Godfather',
+        style: TextStyle(fontWeight: FontWeight.bold),
+      ),
+      Text(
+        'The aging patriarch of an organized crime dynasty transfers control of his empire to his reluctant son.',
+      ),
+    ],
+  ),
+),
     );
-  }
+  } 
 }
+
