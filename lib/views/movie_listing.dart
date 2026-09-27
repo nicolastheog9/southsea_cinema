@@ -10,7 +10,9 @@ class MovieListing extends StatefulWidget { //changed it to stateufl to change t
 }
 
 class _MovieListingState extends State<MovieListing> {
-  int _totalPrice = 10;
+  int _totalPrice = 7;
+  int _selectedTickets = 1;
+  bool _showBookingMessage = false;
 
   @override
   Widget build(BuildContext context) {
@@ -44,24 +46,51 @@ class _MovieListingState extends State<MovieListing> {
               'The aging patriarch of an organized crime dynasty transfers control of his empire to his reluctant son.',
               style: TextStyle(fontSize: 16),
             ),
-
-            DropdownMenu<int>(
-              initialSelection: _totalPrice,
-              onSelected: (int? value) {
-                if (value != null) {
-                  setState(() {
-                    _totalPrice = value;
-                  });
-                }
-              },
-              dropdownMenuEntries: const [
-                DropdownMenuEntry(value: 7, label: '1 Ticket'),
-                DropdownMenuEntry(value: 14, label: '2 Tickets'),
-                DropdownMenuEntry(value: 21, label: '3 Tickets'),
-                DropdownMenuEntry(value: 28, label: '4 Tickets'),
-                DropdownMenuEntry(value: 35, label: '5 Tickets'),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                DropdownMenu<int>(
+                  initialSelection: _totalPrice,
+                  onSelected: (int? value) {
+                    if (value != null) {
+                      setState(() {
+                        _totalPrice = value;
+                        _selectedTickets = value ~/ 7;
+                        _showBookingMessage = false;
+                      });
+                    }
+                  },
+                  dropdownMenuEntries: const [
+                    DropdownMenuEntry(value: 7, label: '1 Ticket'),
+                    DropdownMenuEntry(value: 14, label: '2 Tickets'),
+                    DropdownMenuEntry(value: 21, label: '3 Tickets'),
+                    DropdownMenuEntry(value: 28, label: '4 Tickets'),
+                    DropdownMenuEntry(value: 35, label: '5 Tickets'),
+                  ],
+                ),
+                const SizedBox(width: 10),
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      _showBookingMessage = true;
+                    });
+                  },
+                  child: const Text('Book Now'),
+                ),
               ],
             ),
+            if (_showBookingMessage)
+              Padding(
+                padding: const EdgeInsets.only(top: 12),
+                child: Text(
+                  '$_selectedTickets tickets have been added to your booking ',
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: Colors.green,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
           ],
         ),
       ),
