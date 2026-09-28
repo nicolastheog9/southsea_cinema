@@ -11,7 +11,7 @@ class MovieListing extends StatefulWidget { //changed it to stateufl to change t
 
 class _MovieListingState extends State<MovieListing> {
   int _totalPrice = 7;
-  int _selectedTickets = 1;
+  int _selectedTickets = 0;
   bool _showBookingMessage = false;
 
   @override
@@ -27,63 +27,89 @@ class _MovieListingState extends State<MovieListing> {
       body: Container(
         margin: const EdgeInsets.all(8),
         padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: const Color.fromARGB(255, 65, 216, 236),
-            width: 2,
-          ),
-          borderRadius: BorderRadius.circular(10),
-        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
             const Text(
-              'The Godfather',
-              style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+              'HOW TO TRAIN YOUR DRAGON 2',
+              style: TextStyle(fontSize: 25)
             ),
+            const SizedBox(height: 30),
             const Text(
-              'The aging patriarch of an organized crime dynasty transfers control of his empire to his reluctant son.',
+              'Southsea Cinema Room',
               style: TextStyle(fontSize: 16),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 15),
+            const Text('Thursday 22 Oct 2026, 18:00 - Ends at 19:30'),
+            const SizedBox(height: 30),
+            const Text('Please Note that Discounts/ Membership Benefits will be applied once you have selected your tickets'),
+            const SizedBox(height: 15),
+            const Text('Select Quantities (Up to 5 in total)'),
+            const SizedBox(height: 30),
+            const Text('Tickets',style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
             Row(
               children: [
                 DropdownMenu<int>(
-                  initialSelection: _totalPrice,
-                  onSelected: (int? value) {
+                width: 100,
+                initialSelection: _totalPrice,
+                   menuStyle: MenuStyle(
+                   backgroundColor: WidgetStateProperty.all(Colors.white),),
+                   textStyle: const TextStyle(color: Colors.black),
+                   inputDecorationTheme: const InputDecorationTheme(
+                   filled: true,
+                   fillColor: Colors.white,
+                   border: OutlineInputBorder(),
+                   enabledBorder: OutlineInputBorder(),
+                   focusedBorder: OutlineInputBorder(),
+                   ),
+                   onSelected: (int? value) {
                     if (value != null) {
                       setState(() {
-                        _totalPrice = value;
+                        _totalPrice = value ;
                         _selectedTickets = value ~/ 7;
                         _showBookingMessage = false;
                       });
                     }
                   },
                   dropdownMenuEntries: const [
-                    DropdownMenuEntry(value: 7, label: '1 Ticket'),
-                    DropdownMenuEntry(value: 14, label: '2 Tickets'),
-                    DropdownMenuEntry(value: 21, label: '3 Tickets'),
-                    DropdownMenuEntry(value: 28, label: '4 Tickets'),
-                    DropdownMenuEntry(value: 35, label: '5 Tickets'),
+                    DropdownMenuEntry(value: 0, label: '0'),
+                    DropdownMenuEntry(value: 7, label: '1 '),
+                    DropdownMenuEntry(value: 14, label: '2 '),
+                    DropdownMenuEntry(value: 21, label: '3 '),
+                    DropdownMenuEntry(value: 28, label: '4 '),
+                    DropdownMenuEntry(value: 35, label: '5 '),
                   ],
                 ),
                 const SizedBox(width: 10),
-                ElevatedButton(
+                Text('Adult (£7.50)'),
+                
+              ],
+            ),
+            const SizedBox(height: 15),
+            ElevatedButton(
                   onPressed: () {
                     setState(() {
                       _showBookingMessage = true;
                     });
                   },
-                  child: const Text('Book Now'),
-                ),
-              ],
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    foregroundColor: Colors.white,
+                    minimumSize: const Size(100, 30),
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                    shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.zero,
+                    ),
+                  ),
+                  child: const Text('ADD TO ORDER'),
             ),
+              
             if (_showBookingMessage)
               Padding(
                 padding: const EdgeInsets.only(top: 12),
                 child: Text(
-                  '$_selectedTickets tickets have been added to your booking ',
+                  '$_selectedTickets tickets have been added to your order',
                   style: const TextStyle(
                     fontSize: 16,
                     color: Colors.green,
