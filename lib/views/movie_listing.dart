@@ -66,85 +66,45 @@ class _MovieListingState extends State<MovieListing> {
                       style:
                           TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
-                    if (isWide)
-                      Row(
-                        children: [
-                          DropdownMenu<int>(
-                            width: 100,
-                            initialSelection: _totalPrice,
-                            menuStyle: MenuStyle(
-                              backgroundColor: WidgetStateProperty.all(Colors.white),
-                            ),
-                            textStyle: const TextStyle(color: Colors.black),
-                            inputDecorationTheme: const InputDecorationTheme(
-                              filled: true,
-                              fillColor: Colors.white,
-                              border: OutlineInputBorder(),
-                              enabledBorder: OutlineInputBorder(),
-                              focusedBorder: OutlineInputBorder(),
-                            ),
-                            onSelected: (int? value) {
-                              if (value != null) {
-                                setState(() {
-                                  _totalPrice = value;
-                                  _selectedTickets = value ~/ 7;
-                                  _showBookingMessage = false;
-                                });
-                              }
-                            },
-                            dropdownMenuEntries: const [
-                              DropdownMenuEntry(value: 0, label: '0'),
-                              DropdownMenuEntry(value: 7, label: '1 '),
-                              DropdownMenuEntry(value: 14, label: '2 '),
-                              DropdownMenuEntry(value: 21, label: '3 '),
-                              DropdownMenuEntry(value: 28, label: '4 '),
-                              DropdownMenuEntry(value: 35, label: '5 '),
-                            ],
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        DropdownMenu<int>(
+                          width: 100,
+                          initialSelection: _totalPrice,
+                          menuStyle: MenuStyle(
+                            backgroundColor: WidgetStateProperty.all(Colors.white),
                           ),
-                          const SizedBox(width: 10),
-                          const Text('Adult (£7.50)'),
-                        ],
-                      )
-                    else
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          DropdownMenu<int>(
-                            width: 100,
-                            initialSelection: _totalPrice,
-                            menuStyle: MenuStyle(
-                              backgroundColor: WidgetStateProperty.all(Colors.white),
-                            ),
-                            textStyle: const TextStyle(color: Colors.black),
-                            inputDecorationTheme: const InputDecorationTheme(
-                              filled: true,
-                              fillColor: Colors.white,
-                              border: OutlineInputBorder(),
-                              enabledBorder: OutlineInputBorder(),
-                              focusedBorder: OutlineInputBorder(),
-                            ),
-                            onSelected: (int? value) {
-                              if (value != null) {
-                                setState(() {
-                                  _totalPrice = value;
-                                  _selectedTickets = value ~/ 7;
-                                  _showBookingMessage = false;
-                                });
-                              }
-                            },
-                            dropdownMenuEntries: const [
-                              DropdownMenuEntry(value: 0, label: '0'),
-                              DropdownMenuEntry(value: 7, label: '1 '),
-                              DropdownMenuEntry(value: 14, label: '2 '),
-                              DropdownMenuEntry(value: 21, label: '3 '),
-                              DropdownMenuEntry(value: 28, label: '4 '),
-                              DropdownMenuEntry(value: 35, label: '5 '),
-                            ],
+                          textStyle: const TextStyle(color: Colors.black),
+                          inputDecorationTheme: const InputDecorationTheme(
+                            filled: true,
+                            fillColor: Colors.white,
+                            border: OutlineInputBorder(),
+                            enabledBorder: OutlineInputBorder(),
+                            focusedBorder: OutlineInputBorder(),
                           ),
-                          const SizedBox(height: 10),
-                          const Text('Adult (£7.50)'),
-                        ],
-                      ),
+                          onSelected: (int? value) {
+                            if (value != null) {
+                              setState(() {
+                                _totalPrice = value;
+                                _selectedTickets = value ~/ 7;
+                                _showBookingMessage = false;
+                              });
+                            }
+                          },
+                          dropdownMenuEntries: const [
+                            DropdownMenuEntry(value: 0, label: '0'),
+                            DropdownMenuEntry(value: 7, label: '1 '),
+                            DropdownMenuEntry(value: 14, label: '2 '),
+                            DropdownMenuEntry(value: 21, label: '3 '),
+                            DropdownMenuEntry(value: 28, label: '4 '),
+                            DropdownMenuEntry(value: 35, label: '5 '),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        const Text('Adult (£7.50)'),
+                      ],
+                    ),
                     const SizedBox(height: 15),
                     ElevatedButton(
                       onPressed: () {
