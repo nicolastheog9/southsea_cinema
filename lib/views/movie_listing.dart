@@ -93,7 +93,6 @@ class _MovieListingState extends State<MovieListing> {
                             }
                           },
                           dropdownMenuEntries: const [
-                            DropdownMenuEntry(value: 0, label: '0'),
                             DropdownMenuEntry(value: 7, label: '1 '),
                             DropdownMenuEntry(value: 14, label: '2 '),
                             DropdownMenuEntry(value: 21, label: '3 '),
