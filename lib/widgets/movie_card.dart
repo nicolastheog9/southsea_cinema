@@ -14,59 +14,80 @@ class MovieCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: cinemaSurface,
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Image.asset(
-              movie.imagePath,
-              width: 100,
-              height: 150,
-              fit: BoxFit.cover,
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(movie.title, style: cinemaHeaderStyle),
-                  const SizedBox(height: 8),
-
-                  Text(
-                    'Age Rating: ${movie.ageRating}',
-                    style: const TextStyle(color: cinemaBrandLight),
-                  ),
-                  const SizedBox(height: 8),
-
-                  Text(
-                    movie.synopsis,
-                    style: const TextStyle(color: cinemaFontMuted),
-                  ),
-                  const SizedBox(height: 8),
-                  
-                  Text(
-                    'Screening Time: ${movie.screeningTime}',
-                    style: const TextStyle(color: cinemaFontWhite),
-                  ),
-                  const SizedBox(height: 8),
-
-                  ElevatedButton(
-                    onPressed: onBook,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: cinemaBrand,
-                      foregroundColor: Colors.white,
-                    ),
-                    child: const Text('Book Now'),
-                  ),
-                ],
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(8, 12, 8, 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          RichText(
+            text: TextSpan(
+              style: const TextStyle(
+                color: cinemaBrand,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
               ),
+              children: [
+                TextSpan(text: movie.title.toUpperCase()),
+                TextSpan(
+                  text: ' (${movie.ageRating})',
+                  style: const TextStyle(
+                    color: cinemaFontMuted,
+                    fontSize: 11,
+                    fontWeight: FontWeight.normal,
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+          const SizedBox(height: 8),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Image.asset(
+                movie.imagePath,
+                width: 66,
+                height: 100,
+                fit: BoxFit.cover,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  movie.synopsis,
+                  style: const TextStyle(color: cinemaFontWhite),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          const Text(
+            'BOOK TICKETS',
+            style: TextStyle(color: cinemaFontWhite, fontSize: 12),
+          ),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  movie.screeningTime,
+                  style: const TextStyle(color: cinemaFontWhite),
+                ),
+              ),
+              ElevatedButton(
+                onPressed: onBook,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: cinemaBrand,
+                  foregroundColor: Colors.white,
+                  minimumSize: const Size(96, 36),
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.zero,
+                  ),
+                ),
+                child: const Text('BOOK NOW'),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
