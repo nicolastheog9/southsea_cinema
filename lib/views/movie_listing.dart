@@ -130,7 +130,7 @@ class _MovieListingState extends State<MovieListing> {
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: cinemaBrand,
-                          foregroundColor: Colors.white,
+                          foregroundColor: cinemaFontWhite,
                           minimumSize: const Size(236, 60),
                           shape: const RoundedRectangleBorder(
                             borderRadius: BorderRadius.zero,
