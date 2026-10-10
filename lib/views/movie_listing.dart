@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:southsea_cinema/constants.dart';
+import 'package:southsea_cinema/models/movie.dart';
 import 'package:southsea_cinema/widgets/nav_drawer.dart';
 
 class MovieListing extends StatefulWidget {
-  //changed it to stateufl to change the price based on dropdown selection
-  const MovieListing({super.key});
+  final Movie movie;
+
+  const MovieListing({super.key, required this.movie});
 
   @override
   State<MovieListing> createState() => _MovieListingState();
 }
 
 class _MovieListingState extends State<MovieListing> {
-  int _totalPrice = 7;
   int _selectedTickets = 0;
   bool _showBookingMessage = false;
 
@@ -20,122 +21,140 @@ class _MovieListingState extends State<MovieListing> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(appTitle, style: cinemaHeaderStyle),
+        centerTitle: true,
         backgroundColor: cinemaSurface,
         iconTheme: const IconThemeData(color: cinemaBrand),
         elevation: 0,
       ),
       drawer: const NavDrawer(),
-
-
-
-
       body: LayoutBuilder(
         builder: (context, constraints) {
           final isWide = constraints.maxWidth > 600;
+          final posterWidth = isWide ? 188.0 : 150.0;
 
-          return Padding(
+          return SingleChildScrollView(
             padding: EdgeInsets.symmetric(
               horizontal: isWide ? 24 : 16,
-              vertical: 16,
+              vertical: 24,
             ),
             child: Center(
               child: ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 720),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'HOW TO TRAIN YOUR DRAGON 2',
-                      style: TextStyle(fontSize: isWide ? 30 : 25),
-                    ),
-                    const SizedBox(height: 30),
-                    const Text(
-                      'Southsea Cinema Room',
-                      style: TextStyle(fontSize: 16),
-                    ),
-                    const SizedBox(height: 15),
-                    const Text('Thursday 22 Oct 2026, 18:00 - Ends at 19:30'),
-                    const SizedBox(height: 30),
-                    const Text(
-                        'Please Note that Discounts/ Membership Benefits will be applied once you have selected your tickets'),
-                    const SizedBox(height: 15),
-                    const Text('Select Quantities (Up to 5 in total)'),
-                    const SizedBox(height: 30),
-                    const Text(
-                      'Tickets',
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        DropdownMenu<int>(
-                          width: 100,
-                          initialSelection: _totalPrice,
-                          menuStyle: MenuStyle(
-                            backgroundColor: WidgetStateProperty.all(Colors.white),
-                          ),
-                          textStyle: const TextStyle(color: Colors.black),
-                          inputDecorationTheme: const InputDecorationTheme(
-                            filled: true,
-                            fillColor: Colors.white,
-                            border: OutlineInputBorder(),
-                            enabledBorder: OutlineInputBorder(),
-                            focusedBorder: OutlineInputBorder(),
-                          ),
-                          onSelected: (int? value) {
-                            if (value != null) {
-                              setState(() {
-                                _totalPrice = value;
-                                _selectedTickets = value ~/ 7;
-                                _showBookingMessage = false;
-                              });
-                            }
-                          },
-                          dropdownMenuEntries: const [
-                            DropdownMenuEntry(value: 7, label: '1 '),
-                            DropdownMenuEntry(value: 14, label: '2 '),
-                            DropdownMenuEntry(value: 21, label: '3 '),
-                            DropdownMenuEntry(value: 28, label: '4 '),
-                            DropdownMenuEntry(value: 35, label: '5 '),
-                          ],
-                        ),
-                        const SizedBox(height: 10),
-                        const Text('Adult (£7.50)'),
-                      ],
-                    ),
-                    const SizedBox(height: 15),
-                    ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          _showBookingMessage = true;
-                        });
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
-                        foregroundColor: Colors.white,
-                        minimumSize: const Size(100, 30),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 14),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.zero,
+                child: Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.all(isWide ? 30 : 20),
+                  color: cinemaSurface,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '${widget.movie.title.toUpperCase()} '
+                        '(${widget.movie.ageRating})',
+                        style: TextStyle(
+                          color: cinemaFontWhite,
+                          fontSize: isWide ? 30 : 25,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
-                      child: const Text('ADD TO ORDER'),
-                    ),
-                    if (_showBookingMessage)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 12),
-                        child: Text(
-                          '$_selectedTickets tickets have been added to your order',
-                          style: const TextStyle(
-                            fontSize: 16,
-                            color: Colors.green,
-                            fontWeight: FontWeight.bold,
+                      const SizedBox(height: 20),
+                      Image.asset(
+                        widget.movie.imagePath,
+                        width: posterWidth,
+                        height: posterWidth * 1.5,
+                        fit: BoxFit.cover,
+                      ),
+                      const SizedBox(height: 22),
+                      const Text(
+                        'Southsea Cinema Room',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        widget.movie.screeningTime,
+                        style: const TextStyle(fontSize: 18),
+                      ),
+                      const SizedBox(height: 24),
+                      Text(
+                        widget.movie.synopsis,
+                        style: const TextStyle(fontSize: 18, height: 1.4),
+                      ),
+                      const SizedBox(height: 28),
+                      Row(
+                        children: [
+                          const Expanded(
+                            child: Text(
+                              'Tickets (£6.00 each)',
+                              style: TextStyle(fontSize: 18),
+                            ),
+                          ),
+                          DropdownMenu<int>(
+                            width: isWide ? 220 : 120,
+                            initialSelection: _selectedTickets,
+                            textStyle: const TextStyle(
+                              color: cinemaFontWhite,
+                              fontSize: 18,
+                            ),
+                            inputDecorationTheme: const InputDecorationTheme(
+                              border: OutlineInputBorder(),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: cinemaFontMuted),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: cinemaBrand),
+                              ),
+                            ),
+                            onSelected: (int? value) {
+                              if (value != null) {
+                                setState(() {
+                                  _selectedTickets = value;
+                                  _showBookingMessage = false;
+                                });
+                              }
+                            },
+                            dropdownMenuEntries: List.generate(
+                              6,
+                              (quantity) => DropdownMenuEntry(
+                                value: quantity,
+                                label: '$quantity',
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 28),
+                      ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            _showBookingMessage = true;
+                          });
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: cinemaBrand,
+                          foregroundColor: Colors.white,
+                          minimumSize: const Size(236, 60),
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.zero,
                           ),
                         ),
+                        child: const Text(
+                          'Add to order',
+                          style: TextStyle(fontSize: 20),
+                        ),
                       ),
-                  ],
+                      if (_showBookingMessage)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 16),
+                          child: Text(
+                            '$_selectedTickets tickets have been added to your order',
+                            style: const TextStyle(
+                              color: cinemaBrandLight,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
                 ),
               ),
             ),
