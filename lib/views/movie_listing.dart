@@ -73,6 +73,11 @@ class _MovieListingState extends State<MovieListing> {
                         widget.movie.screeningTime,
                         style: const TextStyle(fontSize: 18),
                       ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Ticket price: ${widget.movie.formattedPrice}',
+                        style: const TextStyle(fontSize: 18),
+                      ),
                       const SizedBox(height: 24),
                       Text(
                         widget.movie.synopsis,
@@ -81,10 +86,10 @@ class _MovieListingState extends State<MovieListing> {
                       const SizedBox(height: 28),
                       Row(
                         children: [
-                          const Expanded(
+                          Expanded(
                             child: Text(
-                              'Tickets (£6.00 each)',
-                              style: TextStyle(fontSize: 18),
+                              'Tickets (${widget.movie.formattedPrice} each)',
+                              style: const TextStyle(fontSize: 18),
                             ),
                           ),
                           DropdownMenu<int>(

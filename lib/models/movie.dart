@@ -5,6 +5,7 @@ class Movie {
   final String synopsis;
   final String screeningTime;
   final String imagePath;
+  final double price;
 
   const Movie({
     required this.id,
@@ -13,7 +14,19 @@ class Movie {
     required this.synopsis,
     required this.screeningTime,
     required this.imagePath,
+    required this.price,
   });
+
+  String get formattedPrice => '£${price.toStringAsFixed(2)}';
+
+  bool get isChildFriendly {
+    final normalisedRating = ageRating.toUpperCase();
+    return normalisedRating == 'U' || normalisedRating == 'PG';
+  }
+
+  bool get isAdultOnly {
+    return ageRating.toUpperCase() == '18';
+  }
 }
 
 const movie = Movie(
@@ -24,14 +37,16 @@ const movie = Movie(
       'When Hiccup and Toothless discover an ice cave that is home to hundreds of new wild dragons and the mysterious Dragon Rider, the two friends find themselves at the center of a battle to protect the peace.',
   screeningTime: 'Thursday 22 Oct 2026, 18:00',
   imagePath: 'assets/images/httyd2.jpg',
+  price: 6.0,
 );
 
 const movie2 = Movie(
-  id: "the_wild_robot",
-  title: "The Wild Robot",
-  ageRating: "PG",
+  id: 'the_wild_robot',
+  title: 'The Wild Robot',
+  ageRating: 'PG',
   synopsis:
-      "A robot named Roz finds herself stranded on a remote island after a shipwreck. As she learns to survive in the wilderness, Roz befriends the local animals and discovers the true meaning of life and community.",
+      'A robot named Roz finds herself stranded on a remote island after a shipwreck. As she learns to survive in the wilderness, Roz befriends the local animals and discovers the true meaning of life and community.',
   screeningTime: 'Thursday 22 Oct 2026, 20:30',
-  imagePath: "assets/images/wild_robot.jpg",
+  imagePath: 'assets/images/wild_robot.jpg',
+  price: 6.0,
 );
