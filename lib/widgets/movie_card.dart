@@ -78,9 +78,6 @@ class MovieCard extends StatelessWidget {
                 onPressed: onBook,
                 minimumSize: const Size(96, 36),
                 padding: const EdgeInsets.symmetric(horizontal: 12),
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.zero,
-                ),
               ),
             ],
           ),

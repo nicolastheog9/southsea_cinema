@@ -6,7 +6,7 @@ class PrimaryButton extends StatelessWidget {
   final VoidCallback onPressed;
   final Size? minimumSize;
   final EdgeInsetsGeometry? padding;
-  final OutlinedBorder? shape;
+  final TextStyle? textStyle;
 
   const PrimaryButton({
     super.key,
@@ -14,7 +14,7 @@ class PrimaryButton extends StatelessWidget {
     required this.onPressed,
     this.minimumSize,
     this.padding,
-    this.shape,
+    this.textStyle,
   });
 
   @override
@@ -26,9 +26,11 @@ class PrimaryButton extends StatelessWidget {
         foregroundColor: cinemaFontWhite,
         minimumSize: minimumSize,
         padding: padding,
-        shape: shape,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.zero,
+        ),
       ),
-      child: Text(label),
+      child: Text(label, style: textStyle),
     );
   }
 }

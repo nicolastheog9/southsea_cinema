@@ -14,6 +14,15 @@ void main() {
       );
 
       expect(find.text('Book tickets'), findsOneWidget);
+      final button = tester.widget<ElevatedButton>(find.byType(ElevatedButton));
+      expect(
+        button.style?.shape?.resolve({}),
+        isA<RoundedRectangleBorder>().having(
+          (shape) => shape.borderRadius,
+          'borderRadius',
+          BorderRadius.zero,
+        ),
+      );
     });
 
     testWidgets('invokes onPressed when tapped', (WidgetTester tester) async {
