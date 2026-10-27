@@ -12,7 +12,7 @@ class SouthseaCinemaApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: appTitle,
+      title: "Southsea Cinema & Arts Centre",
       debugShowCheckedModeBanner: false,
       theme: ThemeData.dark().copyWith(
         colorScheme: ColorScheme.fromSeed(
@@ -24,7 +24,8 @@ class SouthseaCinemaApp extends StatelessWidget {
         scaffoldBackgroundColor: cinemaBackground,
         appBarTheme: const AppBarTheme(
           backgroundColor: cinemaSurface,
-          foregroundColor: cinemaFontWhite,
+          iconTheme: IconThemeData(color: cinemaBrand),
+          titleTextStyle: cinemaHeaderStyle,
           elevation: 0,
         ),
       ),
