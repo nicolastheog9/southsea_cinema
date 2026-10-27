@@ -73,4 +73,32 @@ void main() {
 
     expect(find.text('BOOK NOW'), findsNWidgets(2));
   });
+
+  testWidgets('Drawer navigates to the basket and settings routes',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(const SouthseaCinemaApp());
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byTooltip('Open navigation menu'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('My Basket'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('My Basket'), findsOneWidget);
+    expect(
+      ModalRoute.of(tester.element(find.text('My Basket')))?.settings.name,
+      '/basket',
+    );
+
+    await tester.tap(find.byTooltip('Open navigation menu'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('My Settings'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('My Settings'), findsOneWidget);
+    expect(
+      ModalRoute.of(tester.element(find.text('My Settings')))?.settings.name,
+      '/settings',
+    );
+  });
 }
