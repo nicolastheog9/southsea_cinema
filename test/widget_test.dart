@@ -90,7 +90,45 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('BOOK NOW'), findsNWidgets(2));
-    basket.clear();
+
+    await tester.tap(find.text('BOOK NOW').first);
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.byType(DropdownMenu<int>));
+    await tester.tap(find.byType(DropdownMenu<int>));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('1').last);
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Add to order'));
+    await tester.tap(find.text('Add to order'));
+    await tester.pumpAndSettle();
+    expect(basket.getItems(), hasLength(2));
+    expect(basket.getItems().last.movie.id, 'how_to_train_your_dragon_2');
+
+    await tester.tap(find.byTooltip('Back'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byTooltip('Open navigation menu'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('My Basket'));
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('How to Train Your Dragon 2'), findsOneWidget);
+    expect(find.textContaining('The Wild Robot'), findsOneWidget);
+    await tester.tap(find.byTooltip('Remove How to Train Your Dragon 2'));
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('How to Train Your Dragon 2'), findsNothing);
+    expect(find.textContaining('The Wild Robot'), findsOneWidget);
+    expect(basket.getItems(), hasLength(1));
+    expect(basket.getItems().single.movie.id, 'the_wild_robot');
+    expect(basket.getItems().single.quantity, 2);
+
+    await tester.tap(find.text('BUY TICKETS'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Your tickets have been checked out.'), findsOneWidget);
+    expect(find.text('Your basket is empty.'), findsOneWidget);
+    expect(basket.getItems(), isEmpty);
+    expect(basket.getTotalItems(), 0);
   });
 
   testWidgets('Drawer navigates to the basket and settings routes',

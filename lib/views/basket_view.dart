@@ -93,11 +93,11 @@ class _BasketViewState extends State<BasketView> {
                           child: PrimaryButton(
                             label: 'BUY TICKETS',
                             onPressed: () {
+                              setState(_basket.clear);
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                   content: Text(
-                                    'Ticket checkout is not available yet.',
-                                  ),
+                                      'Your tickets have been checked out.'),
                                 ),
                               );
                             },
