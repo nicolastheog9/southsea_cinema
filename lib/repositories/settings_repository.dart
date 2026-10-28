@@ -5,12 +5,14 @@ class SettingsRepository {
 
   static final SettingsRepository instance = SettingsRepository._internal();
 
-  UserSettings _settings = const UserSettings(
-    address: 'Buckingham Building,\nLion Terrace,\nPortsmouth\nPO1 3HE',
+  static const UserSettings defaultSettings = UserSettings(
+    address: '42 Example Street,\nPortsmouth\nPO1 1AA',
     emailAddress: 'alex@example.com',
     patronNumber: '1234',
     receiveNewsByEmail: true,
   );
+
+  UserSettings _settings = defaultSettings;
 
   UserSettings get settings => _settings;
 

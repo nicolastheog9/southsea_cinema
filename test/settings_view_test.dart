@@ -1,20 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
+import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:southsea_cinema/models/user_settings.dart';
 import 'package:southsea_cinema/repositories/settings_repository.dart';
 import 'package:southsea_cinema/views/settings_view.dart';
 
 const _defaultSettings = UserSettings(
-  address: 'Buckingham Building,\nLion Terrace,\nPortsmouth\nPO1 3HE',
+  address: '42 Example Street,\nPortsmouth\nPO1 1AA',
   emailAddress: 'alex@example.com',
   patronNumber: '1234',
   receiveNewsByEmail: true,
 );
 
 void main() {
-  final repository = SettingsRepository.instance;
+  late SettingsRepository repository;
 
   setUp(() {
+    SharedPreferencesAsyncPlatform.instance =
+        InMemorySharedPreferencesAsync.empty();
+    repository = SettingsRepository.instance;
     repository.update(_defaultSettings);
   });
 
@@ -23,6 +29,7 @@ void main() {
     await tester.pumpWidget(
       const MaterialApp(home: SettingsView()),
     );
+    await tester.pumpAndSettle();
 
     expect(find.text('My Settings'), findsOneWidget);
     expect(find.text('Address'), findsOneWidget);
@@ -44,10 +51,73 @@ void main() {
           .text,
       _defaultSettings.emailAddress,
     );
+    expect(
+      tester
+          .widget<TextFormField>(
+              find.byKey(const Key('settings-patron-number')))
+          .controller!
+          .text,
+      _defaultSettings.patronNumber,
+    );
+    expect(
+      tester
+          .widget<SwitchListTile>(
+            find.byKey(const Key('settings-email-preference')),
+          )
+          .value,
+      _defaultSettings.receiveNewsByEmail,
+    );
     await tester.drag(find.byType(ListView), const Offset(0, -600));
     await tester.pumpAndSettle();
     expect(find.text('SAVE SETTINGS'), findsOneWidget);
     expect(find.text('CANCEL'), findsOneWidget);
+  });
+
+  testWidgets('loads saved profile values when settings opens',
+      (WidgetTester tester) async {
+    SharedPreferencesAsyncPlatform.instance =
+        InMemorySharedPreferencesAsync.withData(<String, Object>{
+      prefAddress: '12 Example Lane, Portsmouth',
+      prefEmail: 'patron@example.com',
+      prefPatronNumber: '2468',
+      prefEmailNews: true,
+    });
+
+    await tester.pumpWidget(
+      const MaterialApp(home: SettingsView()),
+    );
+    await tester.pumpAndSettle();
+
+    expect(
+      tester
+          .widget<TextFormField>(find.byKey(const Key('settings-address')))
+          .controller!
+          .text,
+      '12 Example Lane, Portsmouth',
+    );
+    expect(
+      tester
+          .widget<TextFormField>(find.byKey(const Key('settings-email')))
+          .controller!
+          .text,
+      'patron@example.com',
+    );
+    expect(
+      tester
+          .widget<TextFormField>(
+              find.byKey(const Key('settings-patron-number')))
+          .controller!
+          .text,
+      '2468',
+    );
+    expect(
+      tester
+          .widget<SwitchListTile>(
+            find.byKey(const Key('settings-email-preference')),
+          )
+          .value,
+      isTrue,
+    );
   });
 
   testWidgets('validates input, saves settings, and cancels unsaved edits',
@@ -55,6 +125,7 @@ void main() {
     await tester.pumpWidget(
       const MaterialApp(home: SettingsView()),
     );
+    await tester.pumpAndSettle();
 
     await tester.enterText(
       find.byKey(const Key('settings-email')),
@@ -91,15 +162,59 @@ void main() {
     expect(repository.settings.emailAddress, 'patron@example.com');
     expect(repository.settings.patronNumber, '5678');
     expect(repository.settings.receiveNewsByEmail, isFalse);
+    final SharedPreferencesAsync preferences = SharedPreferencesAsync();
+    expect(await preferences.getString(prefAddress), '42 Cinema Street');
+    expect(await preferences.getString(prefEmail), 'patron@example.com');
+    expect(await preferences.getString(prefPatronNumber), '5678');
+    expect(await preferences.getBool(prefEmailNews), isFalse);
 
     await tester.pump(const Duration(seconds: 5));
+    await tester.pumpWidget(const MaterialApp(home: SizedBox()));
+    await tester.pumpAndSettle();
+    await tester.pumpWidget(
+      const MaterialApp(home: SettingsView()),
+    );
+    await tester.pumpAndSettle();
+
+    expect(
+      tester
+          .widget<TextFormField>(find.byKey(const Key('settings-address')))
+          .controller!
+          .text,
+      '42 Cinema Street',
+    );
+    expect(
+      tester
+          .widget<TextFormField>(find.byKey(const Key('settings-email')))
+          .controller!
+          .text,
+      'patron@example.com',
+    );
+    expect(
+      tester
+          .widget<TextFormField>(
+              find.byKey(const Key('settings-patron-number')))
+          .controller!
+          .text,
+      '5678',
+    );
+    expect(
+      tester
+          .widget<SwitchListTile>(
+            find.byKey(const Key('settings-email-preference')),
+          )
+          .value,
+      isFalse,
+    );
+
     await tester.enterText(
       find.byKey(const Key('settings-address')),
       'Unsaved address',
     );
     tester.testTextInput.hide();
     await tester.pumpAndSettle();
-    await tester.ensureVisible(find.text('CANCEL'));
+    await tester.drag(find.byType(ListView), const Offset(0, -600));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('CANCEL'));
     await tester.pumpAndSettle();
 

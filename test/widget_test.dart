@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
+import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:southsea_cinema/constants.dart';
 import 'package:southsea_cinema/main.dart';
 import 'package:southsea_cinema/models/basket_item.dart';
@@ -8,6 +10,13 @@ import 'package:southsea_cinema/repositories/basket_repository.dart';
 import 'package:southsea_cinema/views/movie_listing.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
+  setUp(() {
+    SharedPreferencesAsyncPlatform.instance =
+        InMemorySharedPreferencesAsync.empty();
+  });
+
   testWidgets('Home screen displays its title, movies, and booking buttons',
       (WidgetTester tester) async {
     await tester.pumpWidget(const SouthseaCinemaApp());
