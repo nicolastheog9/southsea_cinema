@@ -15,18 +15,40 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> {
   final MovieRepository _movieRepository = MovieRepository();
-  late Future<List<Movie>> _moviesFuture;
+  List<Movie> _movies = [];
+  bool _loading = true;
+  String _errorMessage = '';
 
   @override
   void initState() {
     super.initState();
-    _moviesFuture = _movieRepository.getMovies();
+    _loadMovies();
   }
 
-  void _retryLoadingMovies() {
+  Future<void> _loadMovies() async {
     setState(() {
-      _moviesFuture = _movieRepository.loadMoviesFromAsset();
+      _loading = true;
+      _errorMessage = '';
     });
+
+    try {
+      final movies = await _movieRepository.loadMoviesFromAsset();
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _movies = movies;
+        _loading = false;
+      });
+    } catch (error) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _errorMessage = 'Unable to load movies: $error';
+        _loading = false;
+      });
+    }
   }
 
   @override
@@ -36,65 +58,54 @@ class _HomeViewState extends State<HomeView> {
         title: const Text(appTitle),
       ),
       drawer: const NavDrawer(),
-      body: FutureBuilder<List<Movie>>(
-        future: _moviesFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          if (snapshot.hasError) {
-            return Center(
-              child: Padding(
-                padding: const EdgeInsets.all(24),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      'Unable to load movies: ${snapshot.error}',
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(color: cinemaFontWhite),
+      body: _loading
+          ? const Center(child: CircularProgressIndicator())
+          : _errorMessage.isNotEmpty
+              ? Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(24),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          _errorMessage,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(color: cinemaFontWhite),
+                        ),
+                        const SizedBox(height: 16),
+                        ElevatedButton(
+                          onPressed: _loadMovies,
+                          child: const Text('Retry'),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: _retryLoadingMovies,
-                      child: const Text('Retry'),
+                  ),
+                )
+              : _movies.isEmpty
+                  ? const Center(
+                      child: Text(
+                        'No movies are currently available.',
+                        style: TextStyle(color: cinemaFontWhite),
+                      ),
+                    )
+                  : ListView.builder(
+                      itemCount: _movies.length,
+                      itemBuilder: (context, index) {
+                        final movie = _movies[index];
+                        return MovieCard(
+                          movie: movie,
+                          onBook: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute<void>(
+                                builder: (context) =>
+                                    MovieListing(movie: movie),
+                              ),
+                            );
+                          },
+                        );
+                      },
                     ),
-                  ],
-                ),
-              ),
-            );
-          }
-
-          final movies = snapshot.data!;
-          if (movies.isEmpty) {
-            return const Center(
-              child: Text(
-                'No movies are currently available.',
-                style: TextStyle(color: cinemaFontWhite),
-              ),
-            );
-          }
-
-          return ListView.builder(
-            itemCount: movies.length,
-            itemBuilder: (context, index) {
-              final movie = movies[index];
-              return MovieCard(
-                movie: movie,
-                onBook: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute<void>(
-                      builder: (context) => MovieListing(movie: movie),
-                    ),
-                  );
-                },
-              );
-            },
-          );
-        },
-      ),
     );
   }
 }
