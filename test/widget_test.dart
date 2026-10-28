@@ -11,6 +11,7 @@ void main() {
   testWidgets('Home screen displays its title, movies, and booking buttons',
       (WidgetTester tester) async {
     await tester.pumpWidget(const SouthseaCinemaApp());
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
     await tester.pumpAndSettle();
 
     expect(find.text(appTitle), findsOneWidget);
