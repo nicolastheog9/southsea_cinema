@@ -124,7 +124,7 @@ void main() {
       (WidgetTester tester) async {
     final basket = BasketRepository.instance;
     basket.clear();
-    final movies = MovieRepository().getMovies();
+    final movies = await MovieRepository().getMovies();
     basket.addItem(BasketItem(movie: movies[0], quantity: 2));
     basket.addItem(BasketItem(movie: movies[1], quantity: 1));
 

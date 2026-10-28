@@ -2,48 +2,67 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:southsea_cinema/repositories/movie_repository.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   group('MovieRepository tests', () {
-    final repository = MovieRepository();
+    late MovieRepository repository;
 
-    test('returns at least two movies with valid details and unique IDs', () {
-      final movies = repository.getMovies();
-      final ids = movies.map((movie) => movie.id).toSet();
+    setUp(() {
+      repository = MovieRepository();
+    });
 
-      expect(movies.length, greaterThanOrEqualTo(2));
-      expect(ids.length, movies.length);
+    test('loads every film from the registered JSON asset', () async {
+      final movies = await repository.loadMoviesFromAsset();
 
+      expect(movies, hasLength(2));
+      expect(
+        movies.map((movie) => movie.id),
+        containsAll(['how_to_train_your_dragon_2', 'the_wild_robot']),
+      );
       for (final movie in movies) {
         expect(movie.id, isNotEmpty);
         expect(movie.title, isNotEmpty);
         expect(movie.ageRating, isNotEmpty);
+        expect(movie.synopsis, isNotEmpty);
+        expect(movie.screeningTime, isNotEmpty);
+        expect(movie.imagePath, isNotEmpty);
         expect(movie.price, greaterThan(0));
       }
     });
 
-    test('returns the movie matching an existing ID', () {
-      final expectedMovie = repository.getMovies().first;
+    test('caches the asset list for getMovies', () async {
+      final loadedMovies = await repository.loadMoviesFromAsset();
 
-      expect(repository.getMovieById(expectedMovie.id), expectedMovie);
+      expect(await repository.getMovies(), loadedMovies);
     });
 
-    test('returns null when no movie matches the ID', () {
-      expect(repository.getMovieById('missing_movie'), isNull);
+    test('returns the movie matching an existing ID', () async {
+      final movies = await repository.getMovies();
+
+      expect(
+        await repository.getMovieById(movies.first.id),
+        movies.first,
+      );
     });
 
-    test('returns only movies matching the age rating', () {
-      final movies = repository.getMoviesByAgeRating('PG');
+    test('returns null when no movie matches an ID', () async {
+      expect(await repository.getMovieById('missing_movie'), isNull);
+    });
+
+    test('returns only movies matching the age rating', () async {
+      final movies = await repository.getMoviesByAgeRating('PG');
 
       expect(movies, isNotEmpty);
       expect(movies.every((movie) => movie.ageRating == 'PG'), isTrue);
-      expect(repository.getMoviesByAgeRating('U'), isEmpty);
+      expect(await repository.getMoviesByAgeRating('U'), isEmpty);
     });
 
-    test('returns only movies priced below 7 pounds', () {
-      final movies = repository.getMoviesUnderPrice(7.0);
+    test('returns only movies priced below the specified price', () async {
+      final movies = await repository.getMoviesUnderPrice(7.0);
 
       expect(movies, isNotEmpty);
       expect(movies.every((movie) => movie.price < 7.0), isTrue);
-      expect(repository.getMoviesUnderPrice(6.0), isEmpty);
+      expect(await repository.getMoviesUnderPrice(6.0), isEmpty);
     });
   });
 }
